@@ -1,0 +1,10 @@
+__pycahce__/
+*.py[cod]
+
+venv/
+.env/
+
+.DS_Store
+
+.idea/
+*.log

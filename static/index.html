@@ -2,20 +2,422 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer & Audio Transcriber</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #4facfe;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed #4facfe;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .file-input:hover {
+            border-color: #0056b3;
+            background: #f8f9fa;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            min-height: 60px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .result-text {
+            color: #666;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #4facfe;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .file-name {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1>VOICE-SUMMARIZER</h1>
-    <button onclick="summarizeVoice()">Get Summary</button>
-    <h3>summary:</h3>
-    <div id="result"></div>
-</div>
-<script>
-    async function summarizeVoice() {
-        const text = document.getElementById
-    }
-</script>
+    <div class="container">
+        <div class="header">
+            <h1>AI Text & Audio Processor</h1>
+            <p>Summarize text and transcribe audio with advanced AI models</p>
+        </div>
 
+        <div class="content">
+            <!-- Text Summarization Section -->
+            <div class="section">
+                <h2>📝 Text Summarization</h2>
+                <textarea id="textInput" placeholder="Enter your text here to get a concise summary..."></textarea>
+                <br><br>
+                <button class="btn" onclick="summarizeText()">Summarize Text</button>
+                <div class="loading" id="summaryLoading">Processing your text...</div>
+                <div class="error" id="summaryError"></div>
+                <div class="result" id="summaryResult">
+                    <h3>Summary:</h3>
+                    <div class="result-text" id="summaryText"></div>
+                </div>
+            </div>
+
+            <!-- Audio Processing Section -->
+            <div class="section">
+                <h2>🎵 Audio Transcription & Summarization</h2>
+                <div class="file-input-wrapper">
+                    <label for="audioFile" class="file-input">
+                        <div style="font-size: 18px; margin-bottom: 10px;">📁</div>
+                        <div>Click to select an audio file</div>
+                        <div style="font-size: 12px; margin-top: 5px; opacity: 0.7;">Supported formats: MP3, WAV, M4A, etc.</div>
+                    </label>
+                    <input type="file" id="audioFile" accept="audio/*" onchange="handleFileSelect(this)">
+                    <div class="file-name" id="fileName"></div>
+                </div>
+                <button class="btn" onclick="processAudio()" id="processBtn" disabled>Transcribe & Summarize</button>
+                <div class="loading" id="audioLoading"></div>
+                <div class="error" id="audioError"></div>
+
+                <!-- Transcription Result -->
+                <div class="result" id="transcriptionResult">
+                    <h3>📝 Transcription:</h3>
+                    <div class="result-text" id="transcriptionText"></div>
+                </div>
+
+                <!-- Summary Result -->
+                <div class="result" id="audioSummaryResult">
+                    <h3>📋 Summary:</h3>
+                    <div class="result-text" id="audioSummaryText"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            const fileName = document.getElementById('fileName');
+            const processBtn = document.getElementById('processBtn');
+
+            if (file) {
+                selectedFile = file;
+                fileName.textContent = `Selected: ${file.name}`;
+                processBtn.disabled = false;
+            } else {
+                selectedFile = null;
+                fileName.textContent = '';
+                processBtn.disabled = true;
+            }
+        }
+
+        async function summarizeText() {
+            const textInput = document.getElementById('textInput').value.trim();
+            const summaryResult = document.getElementById('summaryResult');
+            const summaryText = document.getElementById('summaryText');
+            const summaryLoading = document.getElementById('summaryLoading');
+            const summaryError = document.getElementById('summaryError');
+
+            if (!textInput) {
+                showError('summaryError', 'Please enter some text to summarize.');
+                return;
+            }
+
+            // Reset previous results
+            summaryResult.classList.remove('show');
+            summaryError.classList.remove('show');
+            summaryLoading.classList.add('show');
+
+            try {
+                const response = await fetch('/summary', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        summary: textInput
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    summaryText.textContent = data.summary;
+                    summaryResult.classList.add('show');
+                } else {
+                    showError('summaryError', data.detail || 'An error occurred while summarizing the text.');
+                }
+            } catch (error) {
+                showError('summaryError', 'Network error. Please check your connection and try again.');
+            } finally {
+                summaryLoading.classList.remove('show');
+            }
+        }
+
+        async function processAudio() {
+            if (!selectedFile) {
+                showError('audioError', 'Please select an audio file first.');
+                return;
+            }
+
+            const transcriptionResult = document.getElementById('transcriptionResult');
+            const transcriptionText = document.getElementById('transcriptionText');
+            const audioSummaryResult = document.getElementById('audioSummaryResult');
+            const audioSummaryText = document.getElementById('audioSummaryText');
+            const audioLoading = document.getElementById('audioLoading');
+            const audioError = document.getElementById('audioError');
+
+            // Reset previous results
+            transcriptionResult.classList.remove('show');
+            audioSummaryResult.classList.remove('show');
+            audioError.classList.remove('show');
+
+            try {
+                // Step 1: Transcribe the audio
+                audioLoading.textContent = 'Step 1/2: Transcribing your audio...';
+                audioLoading.classList.add('show');
+
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                const transcriptionResponse = await fetch('/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!transcriptionResponse.ok) {
+                    const errorData = await transcriptionResponse.json();
+                    throw new Error(errorData.detail || 'Failed to transcribe audio');
+                }
+
+                const transcriptionData = await transcriptionResponse.json();
+                const transcribedText = transcriptionData.transcription;
+
+                // Show transcription result
+                transcriptionText.textContent = transcribedText;
+                transcriptionResult.classList.add('show');
+
+                // Step 2: Summarize the transcribed text
+                audioLoading.textContent = 'Step 2/2: Generating summary...';
+
+                const summaryResponse = await fetch('/summary', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        summary: transcribedText
+                    })
+                });
+
+                if (!summaryResponse.ok) {
+                    const errorData = await summaryResponse.json();
+                    throw new Error(errorData.detail || 'Failed to generate summary');
+                }
+
+                const summaryData = await summaryResponse.json();
+
+                // Show summary result
+                audioSummaryText.textContent = summaryData.summary;
+                audioSummaryResult.classList.add('show');
+
+            } catch (error) {
+                showError('audioError', `Error: ${error.message}`);
+            } finally {
+                audioLoading.classList.remove('show');
+            }
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        // Allow Enter key to trigger summarization
+        document.getElementById('textInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                summarizeText();
+            }
+        });
+    </script>
 </body>
 </html>

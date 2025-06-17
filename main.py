@@ -27,6 +27,20 @@ async def summarize(data: TextInput):
 
 @app.post("/transcribe")
 async def transcribe_audio(file: UploadFile = File(...)):
-    audio_bytes = await file.read()
-    result = asr(audio_bytes, return_timestamps=False, generate_kwargs={"language":"en"}, chunk_length_s=30)
-    return {"transcription": result["text"]}
+    try:
+        file_location = f"temp_{file.filename}"
+        with open(file_location, "wb") as f:
+            f.write(await file.read())
+
+        result = asr(
+            file_location,
+            return_timestamps=False,
+            chunk_length_s = 30,
+            generate_kwargs={"language": "en"}
+        )
+
+        return {"text": result["text"]}
+
+    except Exception as e:
+        return {"error": str(e)}
+
